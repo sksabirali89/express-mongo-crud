@@ -1,0 +1,51 @@
+Arguments: 
+  /Users/sksabirali/.nvm/versions/node/v18.16.1/bin/node /Users/sksabirali/.nvm/versions/node/v18.16.1/bin/yarn
+
+PATH: 
+  /Users/sksabirali/.nvm/versions/node/v18.16.1/bin:/Library/Frameworks/Python.framework/Versions/3.9/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/sksabirali/.nvm/versions/node/v18.16.1/bin:/Library/Frameworks/Python.framework/Versions/3.9/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.16.1
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/cors: ETIMEDOUT
+      at Timeout._onTimeout (/Users/sksabirali/.nvm/versions/node/v18.16.1/lib/node_modules/yarn/lib/cli.js:141550:19)
+      at listOnTimeout (node:internal/timers:569:17)
+      at process.processTimers (node:internal/timers:512:7)
+
+npm manifest: 
+  {
+    "name": "node-express-mongodb",
+    "version": "1.0.0",
+    "description": "Node.js Restful CRUD API with Node.js, Express and MongoDB",
+    "main": "server.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+      "nodejs",
+      "express",
+      "rest",
+      "api",
+      "mongodb"
+    ],
+    "author": "SK Sabir Ali",
+    "license": "No Licence",
+    "dependencies": {
+      "cors": "^2.8.5",
+      "express": "^4.18.2",
+      "mongoose": "^6.11.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
