@@ -108,6 +108,8 @@ app.get("/api/protected", authenticateToken, (req, res) => {
 
 require("./app/routes/turorial.routes")(app);
 
+require("./app/routes/user.routes")(app); // users route
+
 app.listen(8080, () => {
   console.log("Server is running on http://localhost:8080");
 });
