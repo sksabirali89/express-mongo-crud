@@ -2,6 +2,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const swaggerFile = require("./swagger-output.json");
 
 const app = express();
 app.use(express.json());
@@ -70,14 +72,22 @@ app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
   const user = users.find((u) => u.username === username);
   console.log("user", user);
+  console.log("isMatch", bcrypt.compareSync(user.password, password));
 
-  if (!user || !bcrypt.compareSync(password, user.password)) {
+  if (!user || !bcrypt.compareSync(user.password, password)) {
     return res.status(401).json({ message: "Invalid username or password" });
   }
 
   const token = generateToken(user, "15m");
   const refreshToken = generateRefreshToken();
   res.json({ token, refreshToken });
+});
+// Protected endpoint example
+app.get("/api/my-profile", authenticateToken, (req, res) => {
+  res.json({
+    message: "Protected endpoint accessed successfully",
+    user: req.user,
+  });
 });
 
 // Refresh token endpoint
@@ -98,16 +108,12 @@ app.post("/api/refresh-token", (req, res) => {
   });
 });
 
-// Protected endpoint example
-app.get("/api/protected", authenticateToken, (req, res) => {
-  res.json({
-    message: "Protected endpoint accessed successfully",
-    user: req.user,
-  });
-});
-
 require("./app/routes/turorial.routes")(app);
 
-app.listen(8080, () => {
-  console.log("Server is running on http://localhost:8080");
+require("./app/routes/user.routes")(app); // users route
+
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile)); //swagger doc route
+
+app.listen(8081, () => {
+  console.log("Server is running on http://localhost:8081");
 });
