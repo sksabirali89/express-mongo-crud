@@ -2,6 +2,8 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
+const swaggerUi = require("swagger-ui-express");
+const swaggerFile = require("./swagger-output.json");
 
 const app = express();
 app.use(express.json());
@@ -109,6 +111,8 @@ app.post("/api/refresh-token", (req, res) => {
 require("./app/routes/turorial.routes")(app);
 
 require("./app/routes/user.routes")(app); // users route
+
+app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile)); //swagger doc route
 
 app.listen(8081, () => {
   console.log("Server is running on http://localhost:8081");
