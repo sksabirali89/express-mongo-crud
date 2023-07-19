@@ -4,6 +4,7 @@ const bcrypt = require("bcryptjs");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output.json");
+const { createHashFromString } = require("./app/utils/common-functions");
 
 const app = express();
 app.use(express.json());
@@ -69,16 +70,14 @@ function authenticateToken(req, res, next) {
 
 // Login endpoint
 app.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find((u) => u.username === username);
-  console.log("user", user);
-  console.log("isMatch", bcrypt.compareSync(user.password, password));
+  const dbUser = users.find((u) => u.username === req.body.username);
+  const hash = createHashFromString(req.body.password);
 
-  if (!user || !bcrypt.compareSync(user.password, password)) {
+  if (!dbUser || !bcrypt.compareSync(dbUser.password, hash)) {
     return res.status(401).json({ message: "Invalid username or password" });
   }
 
-  const token = generateToken(user, "15m");
+  const token = generateToken(dbUser, "15m");
   const refreshToken = generateRefreshToken();
   res.json({ token, refreshToken });
 });
