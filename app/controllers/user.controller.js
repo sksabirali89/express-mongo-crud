@@ -3,7 +3,7 @@ const User = db.users;
 
 // Create and Save a new User
 exports.create = (req, res) => {
-
+  // #swagger.tags = ['Users']
   console.log(req.body);
 
   // Validate request
@@ -17,19 +17,18 @@ exports.create = (req, res) => {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
-    enable_status: req.body.enable_status ? req.body.enable_status : false
+    enable_status: req.body.enable_status ? req.body.enable_status : false,
   });
 
   // Save User in the database
   user
     .save(user)
-    .then(data => {
+    .then((data) => {
       res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the User."
+        message: err.message || "Some error occurred while creating the User.",
       });
     });
 };
@@ -37,16 +36,17 @@ exports.create = (req, res) => {
 // Retrieve all users from the database.
 exports.findAll = (req, res) => {
   const name = req.query.name;
-  var condition = name ? { name: { $regex: new RegExp(name), $options: "i" } } : {};
+  var condition = name
+    ? { name: { $regex: new RegExp(name), $options: "i" } }
+    : {};
 
   User.find(condition)
-    .then(data => {
+    .then((data) => {
       res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving users."
+        message: err.message || "Some error occurred while retrieving users.",
       });
     });
 };
@@ -56,15 +56,13 @@ exports.findOne = (req, res) => {
   const id = req.params.id;
 
   User.findById(id)
-    .then(data => {
+    .then((data) => {
       if (!data)
         res.status(404).send({ message: "Not found User with id " + id });
       else res.send(data);
     })
-    .catch(err => {
-      res
-        .status(500)
-        .send({ message: "Error retrieving User with id=" + id });
+    .catch((err) => {
+      res.status(500).send({ message: "Error retrieving User with id=" + id });
     });
 };
 
@@ -72,23 +70,23 @@ exports.findOne = (req, res) => {
 exports.update = (req, res) => {
   if (!req.body) {
     return res.status(400).send({
-      message: "Data to update can not be empty!"
+      message: "Data to update can not be empty!",
     });
   }
 
   const id = req.params.id;
 
   User.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-    .then(data => {
+    .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot update User with id=${id}. Maybe User was not found!`
+          message: `Cannot update User with id=${id}. Maybe User was not found!`,
         });
       } else res.send({ message: "User was updated successfully." });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: "Error updating User with id=" + id
+        message: "Error updating User with id=" + id,
       });
     });
 };
@@ -98,20 +96,20 @@ exports.delete = (req, res) => {
   const id = req.params.id;
 
   User.findByIdAndRemove(id, { useFindAndModify: false })
-    .then(data => {
+    .then((data) => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete User with id=${id}. Maybe User was not found!`
+          message: `Cannot delete User with id=${id}. Maybe User was not found!`,
         });
       } else {
         res.send({
-          message: "User was deleted successfully!"
+          message: "User was deleted successfully!",
         });
       }
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message: "Could not delete User with id=" + id
+        message: "Could not delete User with id=" + id,
       });
     });
 };
@@ -119,15 +117,14 @@ exports.delete = (req, res) => {
 // Delete all users from the database.
 exports.deleteAll = (req, res) => {
   User.deleteMany({})
-    .then(data => {
+    .then((data) => {
       res.send({
-        message: `${data.deletedCount} users were deleted successfully!`
+        message: `${data.deletedCount} users were deleted successfully!`,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while removing all users."
+        message: err.message || "Some error occurred while removing all users.",
       });
     });
 };
@@ -135,13 +132,12 @@ exports.deleteAll = (req, res) => {
 // Find all enable_status users
 exports.findAllEnableStatus = (req, res) => {
   User.find({ enable_status: true })
-    .then(data => {
+    .then((data) => {
       res.send(data);
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving users."
+        message: err.message || "Some error occurred while retrieving users.",
       });
     });
 };

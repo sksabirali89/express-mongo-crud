@@ -10,7 +10,10 @@ const doc = {
 };
 
 const outputFile = "./swagger-output.json";
-const endpointsFiles = ["./app/routes/turorial.routes.js"];
+const endpointsFiles = [
+  "./app/routes/turorial.routes.js",
+  "./app/routes/blog.routes.js",
+];
 
 /* NOTE: if you use the express Router, you must pass in the 
    'endpointsFiles' only the root file where the route starts,

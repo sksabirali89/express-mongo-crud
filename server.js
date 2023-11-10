@@ -3,13 +3,20 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
+const { authenticateToken } = require("./app/middleware/jwt-auth");
 const swaggerFile = require("./swagger-output.json");
 const { createHashFromString } = require("./app/utils/common-functions");
+const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
+dotenv.config();
 
 const app = express();
-app.use(express.json());
+// Serve static files from the public folder
+app.use(express.static("public"));
+//app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 const corsOptions = {
-  origin: "http://localhost:8081",
+  origin: "*",
 };
 app.use(cors(corsOptions));
 
@@ -28,7 +35,7 @@ db.mongoose
   });
 
 // Secret key for JWT
-const secretKey = "your-secret-key";
+const secretKey = process.env.JWT_SECRET;
 
 // Example user object (replace with your own user database or API)
 const users = [
@@ -41,7 +48,9 @@ const refreshTokens = [];
 
 // Generate JWT token
 function generateToken(user, expiresIn) {
-  return jwt.sign({ id: user.id, role: user.role }, secretKey, { expiresIn });
+  return jwt.sign({ id: user.id, role: user.role }, secretKey, {
+    expiresIn: "1d",
+  });
 }
 
 // Generate refresh token
@@ -52,66 +61,28 @@ function generateRefreshToken() {
 }
 
 // Middleware to verify JWT token
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (token == null) {
-    return res.sendStatus(401);
-  }
+// function authenticateToken(req, res, next) {
+//   const authHeader = req.headers["authorization"];
+//   const token = authHeader && authHeader.split(" ")[1];
+//   if (token == null) {
+//     return res.sendStatus(401);
+//   }
 
-  jwt.verify(token, secretKey, (err, user) => {
-    if (err) {
-      return res.sendStatus(403);
-    }
-    req.user = user;
-    next();
-  });
-}
+//   jwt.verify(token, secretKey, (err, user) => {
+//     if (err) {
+//       return res.sendStatus(403);
+//     }
+//     req.user = user;
+//     next();
+//   });
+// }
 
-// Login endpoint
-app.post("/api/login", (req, res) => {
-  const dbUser = users.find((u) => u.username === req.body.username);
-  const hash = createHashFromString(req.body.password);
-
-  if (!dbUser || !bcrypt.compareSync(dbUser.password, hash)) {
-    return res.status(401).json({ message: "Invalid username or password" });
-  }
-
-  const token = generateToken(dbUser, "15m");
-  const refreshToken = generateRefreshToken();
-  res.json({ token, refreshToken });
-});
-// Protected endpoint example
-app.get("/api/my-profile", authenticateToken, (req, res) => {
-  res.json({
-    message: "Protected endpoint accessed successfully",
-    user: req.user,
-  });
-});
-
-// Refresh token endpoint
-app.post("/api/refresh-token", (req, res) => {
-  const { refreshToken } = req.body;
-
-  if (!refreshToken || !refreshTokens.includes(refreshToken)) {
-    return res.sendStatus(403);
-  }
-
-  jwt.verify(refreshToken, secretKey, (err, user) => {
-    if (err) {
-      return res.sendStatus(403);
-    }
-
-    const token = generateToken(user, "15m");
-    res.json({ token });
-  });
-});
-
-require("./app/routes/turorial.routes")(app);
-
-require("./app/routes/user.routes")(app); // users route
-
+require("./app/routes/auth.routes")(app);
 app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile)); //swagger doc route
+//app.use(authenticateToken);
+require("./app/routes/turorial.routes")(app);
+require("./app/routes/user.routes")(app); // users route
+require("./app/routes/blog.routes")(app);
 
 app.listen(8081, () => {
   console.log("Server is running on http://localhost:8081");
