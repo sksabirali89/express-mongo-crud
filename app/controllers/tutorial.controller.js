@@ -32,6 +32,7 @@ exports.create = (req, res) => {
 };
 
 // Retrieve all Tutorials from the database.
+
 exports.findAll = (req, res) => {
   // #swagger.tags = ['Tutorials']
   const title = req.query.title;

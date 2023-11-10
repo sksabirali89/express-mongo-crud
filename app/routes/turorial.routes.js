@@ -4,7 +4,7 @@ module.exports = (app) => {
   //var router = require("express").Router();
 
   // Create a new Tutorial
-  // router.post("/", tutorials.create);
+  app.post("/api/tutorials", tutorials.create);
 
   // // Retrieve all Tutorials
   app.get("/api/tutorials", tutorials.findAll);
@@ -13,7 +13,7 @@ module.exports = (app) => {
   app.post("/api/tutorials", tutorials.create);
 
   // // Retrieve all published Tutorials
-  // router.get("/published", tutorials.findAllPublished);
+  // app.get("/api/tutorials/published", tutorials.findAllPublished);
 
   // // Retrieve a single Tutorial with id
   // router.get("/:id", tutorials.findOne);

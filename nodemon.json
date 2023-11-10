@@ -1,3 +1,4 @@
 {
-  "ignore": ["swagger-output.json", "node_modules/"]
+  "verbose": true,
+  "ignore": ["node_modules/", "swagger-output.json"]
 }
